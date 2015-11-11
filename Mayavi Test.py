@@ -13,3 +13,4 @@ from mayavi import mlab
 s = mlab.mesh(x, y, z)
 mlab.show()
 '''
+print("Hello world")
