@@ -1,2 +1,2 @@
 # Simplex3D
-3D Simplex method with maya vs
+3D Simplex method with maya vi
