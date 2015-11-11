@@ -6,11 +6,10 @@ r = sin(m0*phi)**m1 + cos(m2*phi)**m3 + sin(m4*theta)**m5 + cos(m6*theta)**m7
 x = r*sin(phi)*cos(theta)
 y = r*cos(phi)
 z = r*sin(phi)*sin(theta)
-print("Server")
+
 # View it.
-'''
+
 from mayavi import mlab
 s = mlab.mesh(x, y, z)
 mlab.show()
-'''
-print("Hello world")
+
