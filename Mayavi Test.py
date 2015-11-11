@@ -1,15 +1,30 @@
-from numpy import pi, sin, cos, mgrid
-dphi, dtheta = pi/250.0, pi/250.0
-[phi,theta] = mgrid[0:pi+dphi*1.5:dphi,0:2*pi+dtheta*1.5:dtheta]
-m0 = 4; m1 = 3; m2 = 2; m3 = 3; m4 = 6; m5 = 2; m6 = 6; m7 = 4;
-r = sin(m0*phi)**m1 + cos(m2*phi)**m3 + sin(m4*theta)**m5 + cos(m6*theta)**m7
-x = r*sin(phi)*cos(theta)
-y = r*cos(phi)
-z = r*sin(phi)*sin(theta)
-
-# View it.
+# Author: Prabhu Ramachandran <prabhu [at] aero.iitb.ac.in>
+# Copyright (c) 2009, Enthought, Inc.
+# License: BSD Style.
 
 from mayavi import mlab
-s = mlab.mesh(x, y, z)
-mlab.show()
+from tvtk.tools import visual
+import numpy as np
+# Create a figure
+f = mlab.figure(size=(500,500))
+# Tell visual to use this as the viewer.
+visual.set_viewer(f)
 
+
+# Even sillier animation.
+b1 = visual.sphere()
+b2 = visual.box(x=4., color=visual.color.red)
+b3 = visual.box(x=-4, color=visual.color.red)
+b1.v = 5.0
+
+@mlab.show
+@mlab.animate(delay=20)
+def anim():
+    i=0
+    while True:
+        i+=1
+        b1.x=2*np.sin(i/10.)
+        yield
+
+# Run the animation.
+anim()
