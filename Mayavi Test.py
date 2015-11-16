@@ -5,15 +5,13 @@ import numpy as np
 # Create a figure
 
 f = mlab.figure(size=(1000,1000))
-
+print(10)
+t=np.arange(1,100,0.1)
+nn=[]
+for j in t: nn.append([[0.,np.sin(j/10.),np.sin(j/10.)],[np.sin(j/10.),0.,0.],[0.,0.,np.sin(j/10.)],[0.,np.sin(j/10.),0.]])
 # Tell visual to use this as the viewer.
 @mlab.show
 @mlab.animate(delay=20)
-
-
-
-
-
 def initialize():
     coord=[[0,0,0],[1,0,0],[0,0,1],[0,1,0]]
     #Colors
@@ -23,31 +21,36 @@ def initialize():
     visual.set_viewer(f)
     b=[]
     l=[]
-    yield
+
     for i in coord:
         b.append(visual.sphere(pos=i,radius=0.05))
-        yield
-    '''
+
+
     for i in coord:
         for j in coord:
             if i!=j:
                 l.append(mlab.plot3d( [i[0],(i[0]+j[0])/2.,j[0]] ,[i[1],(i[1]+j[1])/2.,j[1]] ,[i[2],(i[2]+j[2])/2.,j[2]] ,tube_radius=0.01,color=red))
-                yield
 
-'''
-    print("a")
-    t=np.arange(1,1000,0.1)
-    nn=[]
-    for j in t: nn.append([[0.,np.sin(j/10.),np.sin(j/10.)],[np.sin(j/10.),0.,0.],[0.,0.,np.sin(j/10.)],[0.,np.sin(j/10.),0.]])
+
+
+
 
     
     for i in nn:
         for j in range(4):
-            print(i[0][1])
+
             b[j].x=i[j][0]
             b[j].y=i[j][1]
             b[j].z=i[j][2]
-            yield
+        p=0
+        for a in i:
+            for c in i:
+                if(a!=c):
+                    l[p].mlab_source.set(x=[a[0], (a[0]+c[0])/2. ,c[0]])
+                    l[p].mlab_source.set(y=[a[1], (a[1]+c[1])/2. ,c[1]])
+                    l[p].mlab_source.set(z=[a[2], (a[2]+c[2])/2. ,c[2]])
+                    p+=1
+        yield
 
 def demoanim():
     visual.set_viewer(f)
