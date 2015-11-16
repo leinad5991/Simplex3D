@@ -4,6 +4,7 @@ from tvtk.tools import visual
 import numpy as np
 # Create a figure
 
+
 f = mlab.figure(size=(1000,1000))
 print(10)
 t=np.arange(1,100,0.1)
@@ -11,7 +12,7 @@ nn=[]
 for j in t: nn.append([[0.,np.sin(j/10.),np.sin(j/10.)],[np.sin(j/10.),0.,0.],[0.,0.,np.sin(j/10.)],[0.,np.sin(j/10.),0.]])
 # Tell visual to use this as the viewer.
 @mlab.show
-@mlab.animate(delay=20)
+@mlab.animate(delay=50)
 def initialize():
     coord=[[0,0,0],[1,0,0],[0,0,1],[0,1,0]]
     #Colors
@@ -50,8 +51,10 @@ def initialize():
                     l[p].mlab_source.set(y=[a[1], (a[1]+c[1])/2. ,c[1]])
                     l[p].mlab_source.set(z=[a[2], (a[2]+c[2])/2. ,c[2]])
                     p+=1
-        yield
 
+        yield
+@mlab.show
+@mlab.animate(delay=50)
 def demoanim():
     visual.set_viewer(f)
 
@@ -85,16 +88,43 @@ def anim(coords,obj):
 
             i.mlab_source.set(x=c[0],y=c[1],z=c[2])
             yield
+def scalar3():
 
-def scalar():
+    s=64
+    x, y, z = np.ogrid[-10:10:20j, -10:10:20j, -10:10:20j]
+
+    data = x*y*z
+
+    grid = mlab.pipeline.scalar_field(data)
+    grid.spacing = [1.0, 1.0, 2.0]
+
+    contours = mlab.pipeline.contour_surface(grid,
+                             contours=np.logspace(1,10,base=2).tolist(), transparent=True)
+    mlab.show()
+
+def scalar2():
+    x, y, z = np.ogrid[-10:10:20j, -10:10:20j, -10:10:20j]
+    s= np.sin(x*y*z)/(x*y*z)
+    src=mlab.pipeline.volume(mlab.pipeline.scalar_field(s),vmin=0, vmax=0.8)
+    #mlab.outline()
+    mlab.show()
+
+def scalar1():
     x, y, z = np.ogrid[-10:10:20j, -10:10:20j, -10:10:20j]
     #s = 2*x**2+y**2+z**2
     s= np.sin(x*y*z)/(x*y*z)
     #mlab.pipeline.volume(mlab.pipeline.scalar_field(s))
-    mlab.pipeline.volume(mlab.pipeline.scalar_field(s),vmin=0, vmax=0.8)
+    src=mlab.pipeline.volume(mlab.pipeline.scalar_field(s),vmin=0, vmax=0.8)
+    mlab.pipeline.iso_surface(src, contours=[s.min()+0.1*s.ptp(), ], opacity=0.1)  # ptp is the range
+    mlab.pipeline.iso_surface(src, contours=[s.max()-0.1*s.ptp(), ],)
+    mlab.pipeline.image_plane_widget(src,
+                                 plane_orientation='z_axes',
+                                 slice_index=10)
+
+
     mlab.show()
 
-#scalar()
+scalar3()
 print(100)
-initialize()
+#initialize()
 #demoanim()
