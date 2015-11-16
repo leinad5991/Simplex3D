@@ -12,11 +12,14 @@ ToDo:
 1. **!DONE! implement stop criteria
 2. **!DONE! wrap everything nicely together
 3. more test functions
-4. randoom starting points?
+4. random starting points?
 5. make compatible with maya vi (!!important!!)
 6. port to 2.7 without future
 
 Changelog:
+
+    Version 0.2.1
+        - corrected error in while loop in solver method, difference barley noticeable
 
     Version 0.2:
         -ported to Python 2.7 (still with future import)
@@ -25,7 +28,7 @@ Changelog:
 
 
     Version 0.1:
-        -Simplex algortihm done. Finds minima and runs smoothly
+        -Simplex algorithm done. Finds minima and runs smoothly
 
 """
 
@@ -44,7 +47,7 @@ def rosenbrock(x):
 # search algorithm, ugly but works fine. x is again 4x3 numpy array.
 # Looks better now, still a mess
 def simplex(x, testfn):
-    last = len(x) - 1
+    last = len(x) - 1.0
     x_centroid = 1 / last * np.array([x[0] + x[1] + x[2]])
     x_reflect = np.array([2 * x_centroid[0] - x[last]])
     x_contract = np.array([(x_centroid[0] + x[last]) * 0.5])
@@ -76,7 +79,7 @@ def simplex(x, testfn):
 """
 def solver(func, points, stop_value, failure):
     i = 1
-    while abs(points[-1, 0] - points[0, 0]) > stop_value and abs(points[-1, 1] - points[0, 1]) > stop_value:
+    while abs(points[-1, 0] - points[0, 0]) > stop_value or abs(points[-1, 1] - points[0, 1]) > stop_value:
         points = np.asarray(sorted(points, key=func))
         simplex(points, func)
         i += 1
@@ -91,4 +94,4 @@ def solver(func, points, stop_value, failure):
 
 # start points
 start = np.array([[-15.0, 20.0, -150.0], [-5.0, -8.0, -2.0], [5.0, -20.0, 6.0], [10.0, -51.0, 3.0]])
-solver(square_sum, start, 10 ** (-10), 1000)
+solver(rosenbrock, start, 10 ** (-10), 1000)
