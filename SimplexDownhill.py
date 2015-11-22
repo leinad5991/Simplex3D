@@ -122,7 +122,4 @@ def solver(func, points, stop_value, failure):
 
 
 # start points
-n = 6
-start = n * np.random.rand(4, 3) - n/2
-# start = np.array([[-15.0, 20.0, -15.0], [-5.0, -8.0, -2.0], [5.0, -20.0, 6.0], [10.0, -5.0, 3.0]])
-solver(styb_tang, start, 10 ** (-10), 10000)
+
