@@ -1,52 +1,69 @@
+
 from mayavi.mlab import *
 from tvtk.tools import visual
 import numpy as np
+import SimplexDownhill as sd
 # Create a figure
 
-
-f = figure(size=(1000, 1000))
-print(10)
-t = np.arange(1, 100, 0.1)
-nn = []
-for j in t: nn.append([[0., np.sin(j / 10.), np.sin(j / 10.)], [np.sin(j / 10.), 0., 0.], [0., 0., np.sin(j / 10.)],
-                       [0., np.sin(j / 10.), 0.]])
-
+f = figure(size=(1000,1000))
 
 # Tell visual to use this as the viewer.
 @show
-@animate(delay=50)
-def initialize():
-    coord = [[0, 0, 0], [1, 0, 0], [0, 0, 1], [0, 1, 0]]
-    # Colors
-    red = (1, 0, 0)
+@animate(delay=5000)
+def anim(nn):
+    #coord=[[0,0,0],[1,0,0],[0,0,1],[0,1,0]]
+    coord=nn[0]
+    #Colors
+    red=(1,0,0)
 
     print(1)
     visual.set_viewer(f)
-    b = []
-    l = []
+    b=[]
+    l=[]
 
+    #Initialize Points as balls
     for i in coord:
-        b.append(visual.sphere(pos=i, radius=0.05))
+        b.append(visual.sphere(pos=i,radius=0.05,color=red))
+        yield
+
 
     for i in coord:
         for j in coord:
             if i != j:
-                l.append(mlab.plot3d([i[0], (i[0] + j[0]) / 2., j[0]], [i[1], (i[1] + j[1]) / 2., j[1]],
+                l.append(plot3d([i[0], (i[0] + j[0]) / 2., j[0]], [i[1], (i[1] + j[1]) / 2., j[1]],
                                      [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.01, color=red))
 
+    #offset
+    o=15-5
+
+
+    
     for i in nn:
+        #Update points
         for j in range(4):
-            b[j].x = i[j][0]
-            b[j].y = i[j][1]
-            b[j].z = i[j][2]
-        p = 0
+
+            b[j].x=i[j][0]+o
+            b[j].y=i[j][1]+o
+            b[j].z=i[j][2]+o
+            #Color in progress
+            '''
+            d=sd.square_sum([i[j][0],i[j][1],i[j][2]])/100.
+            print(d)
+            b[j].color=(np.sin(d)**2,0,np.cos(d)**2)
+            b[j].radius=d/10.
+            '''
+
+        print("")
+        p=0
+
+        #Update lines
         for a in i:
             for c in i:
-                if (a != c):
-                    l[p].mlab_source.set(x=[a[0], (a[0] + c[0]) / 2., c[0]])
-                    l[p].mlab_source.set(y=[a[1], (a[1] + c[1]) / 2., c[1]])
-                    l[p].mlab_source.set(z=[a[2], (a[2] + c[2]) / 2., c[2]])
-                    p += 1
+                if(a!=c):
+                    l[p].mlab_source.set(x=[a[0]+o, (a[0]+c[0])/2.+o ,c[0]+o])
+                    l[p].mlab_source.set(y=[a[1]+o, (a[1]+c[1])/2.+o ,c[1]+o])
+                    l[p].mlab_source.set(z=[a[2]+o, (a[2]+c[2])/2.+o ,c[2]+o])
+                    p+=1
 
         yield
 
@@ -60,7 +77,7 @@ def demoanim():
     x = a
     y = np.sin(a)
     z = a * 0
-    s = mlab.plot3d(x, y, z)
+    s = plot3d(x, y, z)
     # Even sillier animation.
     b1 = visual.sphere()
     b2 = visual.box(x=4, color=visual.color.red)
@@ -73,18 +90,6 @@ def demoanim():
         f.scene.camera.azimuth(0.5)
         b1.x = 2 * np.sin(i / 10.)
         yield
-
-
-def anim(coords, obj):
-    visual.set_viewer(f)
-    print(2)
-    b = obj[0]
-    l = obj[1]
-    print(1)
-    for c in coords:
-        for i in b:
-            i.mlab_source.set(x=c[0], y=c[1], z=c[2])
-            yield
 
 
 def scalar3():
@@ -105,7 +110,7 @@ def scalar2():
     x, y, z = np.ogrid[-10:10:20j, -10:10:20j, -10:10:20j]
     s = np.sin(x * y * z) / (x * y * z)
     src = pipeline.volume(pipeline.scalar_field(s), vmin=0, vmax=0.1)
-    # mlab.outline()
+    # outline()
     show()
 
 
@@ -121,8 +126,8 @@ def scalar1():
                                 plane_orientation='z_axes',
                                 slice_index=10)
 
-    show()
 
+    show()
 
 def square_sum():
     x, y, z = np.ogrid[-10:10:64j, -10:10:64j, -10:10:64j]
@@ -178,8 +183,13 @@ def styb_tang():
 # print(100)
 # initialize()
 # demoanim()
+n = 6
+#start = n * np.random.rand(4, 3) - n/2
+start = np.array([[-15.0, 20.0, -15.0], [-5.0, -8.0, -2.0], [5.0, -20.0, 6.0], [10.0, -5.0, 3.0]])
+nn=np.array(sd.solver(sd.styb_tang, start, 10 ** (-10), 10000)).tolist()
 
+anim(nn)
 
-square_sum()
+#square_sum()
 # rosenbrock()
 # styb_tang()
