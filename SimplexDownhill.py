@@ -1,22 +1,22 @@
 from __future__ import division
 import numpy as np
 
-__author__ = 'Philipp Warzecha'
-
-
 # Downhill Simplex in 3D
-
-
 """
 ToDo:
 1. **!DONE! implement stop criteria
 2. **!DONE! wrap everything nicely together
-3. more test functions
+3. **!DONE! more test functions
 4. **!DONE! random starting points?
 5. **!DONE! make compatible with maya vi (!!important!!)
-6. port to 2.7 without future
+6. **!DONE! port to 2.7 without future
 
 Changelog:
+
+    Version 1.0:
+        - removed unnecessary code
+        - enough test functions
+        - import from future removed except division
 
     Version 0.4:
         - rewrote stop criteria
@@ -73,6 +73,7 @@ def simplex(x, testfn):
     x_centroid = 1 / last * np.array([x[0] + x[1] + x[2]])
     x_reflect = np.array([2 * x_centroid[0] - x[last]])
     x_contract = np.array([(x_centroid[0] + x[last]) * 0.5])
+
     f_x0 = testfn(x[0])
     f_xreflect = testfn(x_reflect[0])
     f_xworst = testfn(x[last])
@@ -105,24 +106,16 @@ def simplex(x, testfn):
 def solver(func, points, stop_value, failure):
     maya_points = []
     i = 0
+
     while abs(func(points[-1]) - func(points[0])) > stop_value:
         maya_points.append(points)
         points = np.asarray(sorted(points, key=func))
         simplex(points, func)
         i += 1
         if i >= failure:
-            print "Abbruch nach", i, "Schritten:"
-            print "Punkte: \n", points
-            print "Funktionswerte: ", np.array([func(points[0]), func(points[1]), func(points[2]), func(points[3])])
-            return maya_points
-    print "Miminum gefunden bei: \n", points
-    print "\nFunktionswerte: ", np.array([func(points[0]), func(points[1]), func(points[2]), func(points[3])])
+            print "Abbruch!"
+            break
+    if i< failure : print "Miminum gefunden"
+    print "bei:\n",points, "\nFunktionswert: ", sum(func(points[:]))/4
     print "\nAnzhal Schritte: ", i
     return maya_points
-
-
-# start points
-n = 6
-start = n * np.random.rand(4, 3) - n/2
-# start = np.array([[-15.0, 20.0, -15.0], [-5.0, -8.0, -2.0], [5.0, -20.0, 6.0], [10.0, -5.0, 3.0]])
-solver(styb_tang, start, 10 ** (-10), 10000)
