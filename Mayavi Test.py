@@ -30,8 +30,8 @@ box = [10, -10, 10, -10, 10, -10]
 
 
 @show
-@animate(delay=5000)
-def anim(nn):
+@animate(delay=2000)
+def anim(nn,func):
     # coord=[[0,0,0],[1,0,0],[0,0,1],[0,1,0]]
     coord = nn[0]
     # Colors
@@ -45,42 +45,39 @@ def anim(nn):
     # Initialize Points as balls
     for i in coord:
         b.append(visual.sphere(pos=i, radius=0.40, color=red, extent=box))
-        yield
 
     # Initialize lines between points
     for i in coord:
         for j in coord:
             if i != j:
                 l.append(plot3d([i[0], (i[0] + j[0]) / 2., j[0]], [i[1], (i[1] + j[1]) / 2., j[1]],
-                                [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.08, color=red))
+                                [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.08))
 
-    # offset
-    o = 0
 
-    for i in nn:
+    for i in nn:                    
         # Update points
         for j in range(4):
-            b[j].x = i[j][0] + o
-            b[j].y = i[j][1] + o
-            b[j].z = i[j][2] + o
+            b[j].x = i[j][0]
+            b[j].y = i[j][1]
+            b[j].z = i[j][2]
             # Color in progress
-            '''
-            d=sd.square_sum([i[j][0],i[j][1],i[j][2]])/100.
-            print(d)
-            b[j].color=(np.sin(d)**2,0,np.cos(d)**2)
-            b[j].radius=d/10.
-            '''
-
-        print("")
+            
+            #b[j].radius=np.sqrt(d)
+            
+        b[0].color=(0,0,0)
+        b[1].color=(0,0,0)
+        b[2].color=(0,0,0)
+        b[3].color=(1,0,0)
+            
         p = 0
 
         # Update lines
         for a in i:
             for c in i:
                 if (a != c):
-                    l[p].mlab_source.set(x=[a[0] + o, (a[0] + c[0]) / 2. + o, c[0] + o])
-                    l[p].mlab_source.set(y=[a[1] + o, (a[1] + c[1]) / 2. + o, c[1] + o])
-                    l[p].mlab_source.set(z=[a[2] + o, (a[2] + c[2]) / 2. + o, c[2] + o])
+                    l[p].mlab_source.set(x=[a[0] , (a[0] + c[0]) / 2. , c[0] ])
+                    l[p].mlab_source.set(y=[a[1] , (a[1] + c[1]) / 2. , c[1] ])
+                    l[p].mlab_source.set(z=[a[2] , (a[2] + c[2]) / 2. , c[2] ])
                     p += 1
 
         yield
@@ -203,7 +200,7 @@ n = 6
 start = np.array([[-5.0, 2.0, -1.0], [-5.0, -8.0, -2.0], [5.0, -2.0, 6.0], [10.0, -5.0, 3.0]])
 nn = np.array(sd.solver(sd.square_sum, start, 10 ** (-10), 10000)).tolist()
 
-anim(nn)
+anim(nn,sd.square_sum)
 
 square_sum()
 # rosenbrock()

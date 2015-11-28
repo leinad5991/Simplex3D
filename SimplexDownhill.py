@@ -81,19 +81,24 @@ def simplex(x, testfn):
     # reflected value is better than worst but not better than best value
     if f_xworst >= f_xreflect > f_x0:
         x[last] = x_reflect[0]
+        return "Reflect"
     # reflected value is better than former best, check if expanded value is even better
     elif f_xreflect < f_x0:
         x_expand = np.array(3 * [x_centroid[0] - 2 * x[last]])
         if testfn(x_expand[0]) < f_x0:
             x[last] = x_expand[0]
+            return "2xReflect"
         else:
             x[last] = x_reflect[0]
+            return "Reflect"
     # contracted value is better than worst value
     elif testfn(x_contract[0]) < f_xworst:
         x[last] = x_contract[0]
+        return "1/2xReflect"
     # contract every point but the best towards the best point
     else:
         x[:] = (x[0] + x[:]) * 0.5
+        return "Contract"
 
 
 """
@@ -108,14 +113,16 @@ def solver(func, points, stop_value, failure):
     i = 0
 
     while abs(func(points[-1]) - func(points[0])) > stop_value:
-        maya_points.append(points)
+        
         points = np.asarray(sorted(points, key=func))
-        simplex(points, func)
+        a=simplex(points, func)
+        print(a+"c")
+        maya_points.append(points)
         i += 1
         if i >= failure:
             print "Abbruch!"
             break
     if i< failure : print "Miminum gefunden"
     print "bei:\n",points, "\nFunktionswert: ", sum(func(points[:]))/4
-    print "\nAnzhal Schritte: ", i
+    print "\nAnzhal Schrittte: ", i
     return maya_points
