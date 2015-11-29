@@ -35,8 +35,8 @@ box = [10, -10, 10, -10, 10, -10]
 @show
 @animate(delay=2000)
 def anim(nn, info):
-    txt = text(0.1, 0.9, "hola", line_width=200, figure=f)
-
+    txt = text(0.1, 0.9, "hola", figure=f)
+    txt.property.bold=1
     # coord=[[0,0,0],[1,0,0],[0,0,1],[0,1,0]]
     coord = nn[0]
     # Colors
