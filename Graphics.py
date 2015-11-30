@@ -14,7 +14,10 @@ ToDo:
 5. **!DONE! implement Schwefel function
 6. add more commentary
 Changelog:
-    
+
+    Version 0.4:
+        - improved visuals of scalar functions
+
     Version 0.3:
         - colored points
         - better code for scalar functions
@@ -28,7 +31,7 @@ Changelog:
 """
 # Create a figure. Tell visual to use this as the viewer.
 f = figure(size=(1000, 1000))
-# Create box item for coordinate reference.
+# Create array for coordinate reference.
 box = [10, -10, 10, -10, 10, -10]
 
 
@@ -36,11 +39,11 @@ box = [10, -10, 10, -10, 10, -10]
 @animate(delay=2000)
 def anim(nn, info):
     txt = text(0.1, 0.9, "hola", figure=f)
-    txt.property.bold=1
+    txt.property.bold = 1
     # coord=[[0,0,0],[1,0,0],[0,0,1],[0,1,0]]
     coord = nn[0]
     # Colors
-    red = (1, 0, 0)
+    red, black = (1, 0, 0), (0, 0, 0)
     deb = 0
     visual.set_viewer(f)
     b = []
@@ -48,14 +51,14 @@ def anim(nn, info):
 
     # Initialize Points as balls
     for i in coord:
-        b.append(visual.sphere(pos=i, radius=0.40, color=red, extent=box))
+        b.append(visual.sphere(pos=i, radius=0.25, color=red, extent=box))
 
     # Initialize lines between points
     for i in coord:
         for j in coord:
             if i != j:
                 l.append(plot3d([i[0], (i[0] + j[0]) / 2., j[0]], [i[1], (i[1] + j[1]) / 2., j[1]],
-                                [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.08))
+                                [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.05))
 
     for i in nn:
 
@@ -70,10 +73,10 @@ def anim(nn, info):
 
             # b[j].radius=np.sqrt(d)
 
-        b[0].color = (0, 0, 0)
-        b[1].color = (0, 0, 0)
-        b[2].color = (0, 0, 0)
-        b[3].color = (1, 0, 0)
+        b[0].color = black
+        b[1].color = black
+        b[2].color = black
+        b[3].color = red
 
         p = 0
 
@@ -113,38 +116,47 @@ def demoanim():
         yield
 
 
-def scalar(lev, func):
+def scalar(lev, func, size):
     global box
-    x, y, z = np.ogrid[-10:10:128j, -10:10:128j, -10:10:128j]
+    d = size
+    x, y, z = np.ogrid[-d:d:128j, -d:d:128j, -d:d:128j]
     scalars = func([x, y, z])
     levels = []
     for i in lev:
-        levels.append(scalars.min() + i * scalars.ptp())
+        levels.append(scalars.min() + i * scalars.ptp() * f.scene.magnification)
     obj = contour3d(scalars, contours=levels, transparent=True, extent=box)
     obj.actor.property.set(representation='p')
     obj.actor.property.backface_culling = True
 
-    axes(ranges=[-10, 10, -10, 10, -10, 10], nb_labels=11)
+    axes(ranges=[-d, d, -d, d, -d, d], nb_labels=11)
     return obj
 
 
 def square_sum():
-    return scalar([0.001, 0.01, 0.1, 0.3, 0.5], sd.square_sum)
+    iso = scalar([0.001, 0.01, 0.1, 0.3, 0.5], sd.square_sum, 10)
+    iso.module_manager.scalar_lut_manager.lut.scale = "linear"
+    iso.module_manager.scalar_lut_manager.data_range = [0.0, 170.0]
 
 
 def rosenbrock():
-    return scalar([0.0001, 0.001, 0.01, 0.03, 0.1, 0.3], sd.rosenbrock)
+    iso = scalar([0.0001, 0.001, 0.01, 0.03, 0.1, 0.3], sd.rosenbrock, 10)
+    iso.module_manager.scalar_lut_manager.lut.scale = "log10"
+    iso.module_manager.scalar_lut_manager.data_range = [1000.0, 4000000.0]
 
 
 def styb_tang():
-    return scalar([0.0001, 0.001, 0.01, 0.03, 0.1, 0.3], sd.styb_tang)
+    iso = scalar([0.0003, 0.003, 0.01, 0.03, 0.1, 0.3], sd.styb_tang, 10)
+    iso.module_manager.scalar_lut_manager.lut.scale = "log10"
+    iso.module_manager.scalar_lut_manager.data_range = [0.0, 12000.0]
 
 
 def schwefel():
-    return scalar([0.05, 0.01, 0.2, 0.3, 0.33], sd.schwefel)
+    iso = scalar([0.05, 0.01, 0.2, 0.3, 0.33], sd.schwefel, 600)
+    iso.module_manager.scalar_lut_manager.lut.scale = "linear"
+    iso.module_manager.scalar_lut_manager.data_range = [0.0, 1500.0]
 
 
-n = 6
+n = 20
 # start = n * np.random.rand(4, 3) - n/2
 start = np.array([[-5.0, 2.0, -1.0], [-9, -8.0, -2.0], [5.0, -2.0, 6.0], [9, 9, 9]])
 info, nn = sd.solver(sd.square_sum, start, 10 ** (-10), 10000)
