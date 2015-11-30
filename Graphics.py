@@ -37,18 +37,28 @@ box = [10, -10, 10, -10, 10, -10]
 
 @show
 @animate(delay=2000)
-def anim(nn, info):
-    txt = text(0.1, 0.9, "hola", figure=f)
+def anim(data, info):
+    
+    visual.set_viewer(f)
+    
+    #Text
+    txt = text(0.1, 0.9, "Empty", figure=f)
     txt.property.bold = 1
-    # coord=[[0,0,0],[1,0,0],[0,0,1],[0,1,0]]
-    coord = nn[0]
+
+    
     # Colors
     red, black = (1, 0, 0), (0, 0, 0)
-    deb = 0
-    visual.set_viewer(f)
+    
+    #Iteration
+    it=0
+    
+    #Balls and Lines
     b = []
     l = []
-
+    
+    #First coordinate
+    coord = data[0]
+    
     # Initialize Points as balls
     for i in coord:
         b.append(visual.sphere(pos=i, radius=0.25, color=red, extent=box))
@@ -60,26 +70,24 @@ def anim(nn, info):
                 l.append(plot3d([i[0], (i[0] + j[0]) / 2., j[0]], [i[1], (i[1] + j[1]) / 2., j[1]],
                                 [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.05))
 
-    for i in nn:
+    for i in data:
 
-        txt.text = info[deb]
-        deb += 1
+        txt.text = info[it]
+        it += 1
+        
         # Update points
         for j in range(4):
             b[j].x = i[j][0]
             b[j].y = i[j][1]
             b[j].z = i[j][2]
-            # Color in progress
 
-            # b[j].radius=np.sqrt(d)
-
+        #Ball color
         b[0].color = black
         b[1].color = black
         b[2].color = black
         b[3].color = red
 
         p = 0
-
         # Update lines
         for a in i:
             for c in i:
@@ -97,22 +105,25 @@ def anim(nn, info):
 def demoanim():
     visual.set_viewer(f)
 
-    a = np.arange(-4, 4, 0.1)
-    x = a
-    y = np.sin(a)
-    z = a * 0
-    s = plot3d(x, y, z)
-    # Even sillier animation.
-    b1 = visual.sphere()
-    b2 = visual.box(x=4, color=visual.color.red)
-    b3 = visual.box(x=-4, color=visual.color.red)
+    points = np.arange(-4, 4, 0.1)
+    x = points
+    y = np.sin(points)
+    z = points * 0
+    #Line Plot
+    plot = plot3d(x, y, z)
+    
+    #Ball Plot
+    ball = visual.sphere()
 
     i = 0
     while True:
-        s.mlab_source.set(y=np.sin(a + i / 10.))
+        #Plot Update
+        plot.mlab_source.set(y=np.sin(points + i / 10.))
+        
+        #Ball Update
+        ball.x = 2 * np.sin(i / 10.)
+        
         i += 1
-        f.scene.camera.azimuth(0.5)
-        b1.x = 2 * np.sin(i / 10.)
         yield
 
 
@@ -159,12 +170,12 @@ def schwefel():
 n = 20
 # start = n * np.random.rand(4, 3) - n/2
 start = np.array([[-5.0, 2.0, -1.0], [-9, -8.0, -2.0], [5.0, -2.0, 6.0], [9, 9, 9]])
-info, nn = sd.solver(sd.square_sum, start, 10 ** (-10), 10000)
+info, data = sd.solver(sd.square_sum, start, 10 ** (-10), 10000)
 
-# scalar([0.001,0.01,0.1,0.3,0.5],sd.square_sum)
+
 square_sum()
 # rosenbrock()
 # styb_tang()
-# schwefel()
+#schwefel()
 
-anim(nn, info)
+anim(data,info)

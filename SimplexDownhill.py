@@ -69,12 +69,12 @@ def schwefel(x):
 # Looks better now, still a mess
 def simplex(x, testfn):
     last = len(x) - 1.0
-    x_centroid = 1 / last * np.array([x[0] + x[1] + x[2]])
-    x_reflect = np.array([2 * x_centroid[0] - x[last]])
-    x_contract = np.array([(x_centroid[0] + x[last]) * 0.5])
+    x_centroid = 1 / last * (x[0] + x[1] + x[2])
+    x_reflect = (2 * x_centroid - x[last])
+    x_contract = (x_centroid + x[last]) * 0.5
 
     f_x0 = testfn(x[0])
-    f_xreflect = testfn(x_reflect[0])
+    f_xreflect = testfn(x_reflect)
     f_xworst = testfn(x[last])
 
     # reflected value is better than worst but not better than best value
@@ -83,16 +83,16 @@ def simplex(x, testfn):
         return "Reflect"
     # reflected value is better than former best, check if expanded value is even better
     elif f_xreflect < f_x0:
-        x_expand = np.array([3*x_centroid[0] - 2 * x[last]])
-        if testfn(x_expand[0]) < f_x0:
-            x[last] = x_expand[0]
+        x_expand = 3*x_centroid[0] - 2 * x[last]
+        if testfn(x_expand) < f_x0:
+            x[last] = x_expand
             return "2xReflect"
         else:
-            x[last] = x_reflect[0]
-            return "1xReflect"
+            x[last] = x_reflect
+            return "Reflect"
     # contracted value is better than worst value
-    elif testfn(x_contract[0]) < f_xworst:
-        x[last] = x_contract[0]
+    elif testfn(x_contract) < f_xworst:
+        x[last] = x_contract
         return "1/2xReflect"
     # contract every point but the best towards the best point
     else:
