@@ -50,7 +50,7 @@ def anim(data, info):
     red, black = (1, 0, 0), (0, 0, 0)
     
     #Iteration
-    it=0
+    it=1
     
     #Balls and Lines
     b = []
@@ -61,7 +61,7 @@ def anim(data, info):
     
     # Initialize Points as balls
     for i in coord:
-        b.append(visual.sphere(pos=i, radius=0.25, color=red, extent=box))
+        b.append(visual.sphere(pos=i, radius=0.25, color=black, extent=box))
 
     # Initialize lines between points
     for i in coord:
@@ -70,7 +70,7 @@ def anim(data, info):
                 l.append(plot3d([i[0], (i[0] + j[0]) / 2., j[0]], [i[1], (i[1] + j[1]) / 2., j[1]],
                                 [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.05))
 
-    for i in data:
+    for i in data[1:]:
 
         txt.text = info[it]
         it += 1
@@ -168,8 +168,8 @@ def schwefel():
 
 
 n = 20
-#start = n * np.random.rand(4, 3) - n/2
-start = np.array([[-5.0, 2.0, -1.0], [-9, -8.0, -2.0], [5.0, -2.0, 6.0], [9, 9, 9]])
+start = n * np.random.rand(4, 3) - n/2
+#start = np.array([[-5.0, 2.0, -1.0], [-9, -8.0, -2.0], [5.0, -2.0, 6.0], [9, 9, 9]])
 
 info, data = sd.solver(sd.square_sum, start, 10 ** (-10), 10000)
 

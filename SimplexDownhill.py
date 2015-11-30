@@ -111,7 +111,9 @@ def solver(func, points, stop_value, failure):
     maya_points = []
     info=[]
     i = 0
-
+    info.append("Begining")
+    maya_points.append(points)
+    
     while abs(func(points[-1]) - func(points[0])) > stop_value:
         
         points = np.asarray(sorted(points, key=func))
