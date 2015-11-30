@@ -42,7 +42,7 @@ def anim(data, info):
     visual.set_viewer(f)
     
     #Text
-    txt = text(0.1, 0.9, "Empty", figure=f)
+    txt = text(0.1, 0.9, info[0], figure=f)
     txt.property.bold = 1
 
     
@@ -168,9 +168,11 @@ def schwefel():
 
 
 n = 20
-# start = n * np.random.rand(4, 3) - n/2
+#start = n * np.random.rand(4, 3) - n/2
 start = np.array([[-5.0, 2.0, -1.0], [-9, -8.0, -2.0], [5.0, -2.0, 6.0], [9, 9, 9]])
+
 info, data = sd.solver(sd.square_sum, start, 10 ** (-10), 10000)
+
 
 
 square_sum()

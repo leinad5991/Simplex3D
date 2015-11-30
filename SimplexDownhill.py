@@ -79,7 +79,7 @@ def simplex(x, testfn):
 
     # reflected value is better than worst but not better than best value
     if f_xworst >= f_xreflect > f_x0:
-        x[last] = x_reflect[0]
+        x[last] = x_reflect
         return "Reflect"
     # reflected value is better than former best, check if expanded value is even better
     elif f_xreflect < f_x0:
