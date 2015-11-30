@@ -69,7 +69,7 @@ def anim(data, info):
             if i != j:
                 l.append(plot3d([i[0], (i[0] + j[0]) / 2., j[0]], [i[1], (i[1] + j[1]) / 2., j[1]],
                                 [i[2], (i[2] + j[2]) / 2., j[2]], tube_radius=0.05))
-
+    yield
     for i in data[1:]:
 
         txt.text = info[it]
