@@ -40,30 +40,29 @@ Changelog:
 
     Version 0.1:
         -Simplex algorithm done. Finds minima and runs smoothly
-
 """
 
 
 # x is list of vectors. 4x3 numpy array
 # Minimum: square_sum(0,0,0) = 0, only global minimum
 def square_sum(x):
-    return x[0] ** 2 + x[1] ** 2 + x[2] ** 2
+    return sum(i**2 for i in x)
 
 
 # Minimum: rosenbrock(1,1,1) = 0, only global minimum
 def rosenbrock(x):
-    return abs(100 * (x[1] - x[0] ** 2) ** 2 + (x[0] - 1) ** 2 + 100 * (x[2] - x[1] ** 2) ** 2 + (x[1] - 1) ** 2)
+    return 100 * (x[1] - x[0] ** 2) ** 2 + (x[0] - 1) ** 2 + 100 * (x[2] - x[1] ** 2) ** 2 + (x[1] - 1) ** 2
 
 
 # Minimum: sytblinski_tang(-2.903534,-2.903534,-2.903534) = -117,49797, global minimum, some local minima
 # points remain within a distance higher than 10^-9
 def styb_tang(x):
-    return (x[0] ** 4 - 16.0 * x[0] ** 2 + 5.0 * x[0]) * 0.5 + (x[1] ** 4 - 16.0 * x[1] ** 2 + 5.0 * x[1]) * 0.5 + (x[2] ** 4 - 16.0 * x[2] ** 2 + 5.0 * x[2]) * 0.5
+    return sum(i ** 4 - 16.0 * i ** 2 + 5.0 * i for i in x) * 0.5
 
 
 # Minimum: schwefel(420.9687,420.9687,420.9687) = 0, many local minima
 def schwefel(x):
-    return 418.9829 * 3 - x[0] * np.sin(np.sqrt(abs(x[0]))) - x[1] * np.sin(np.sqrt(abs(x[1]))) - x[2] * np.sin(np.sqrt(abs(x[2])))
+    return 418.9829 * 3 - sum(i * np.sin(np.sqrt(abs(i))) for i in x)
 
 
 # search algorithm, ugly but works fine. x is again 4x3 numpy array.
