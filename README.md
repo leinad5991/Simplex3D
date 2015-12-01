@@ -1,6 +1,5 @@
 # Simplex3D
-3D Simplex method with Maya vi on Python for the Lecture
-hint on how to install mayavi 
-http://stackoverflow.com/questions/20338658/installing-mayavi-on-windows-working-with-python-2-7
+3D Simplex method with Maya vi on Python for the Lecture Computational Physics
 
-Or better use Canopy in the Canpy editor
+
+On windows it is recomended to use Canopy 
