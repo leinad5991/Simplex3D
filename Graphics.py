@@ -171,13 +171,13 @@ n = 20
 start = n * np.random.rand(4, 3) - n/2
 #start = np.array([[-5.0, 2.0, -1.0], [-9, -8.0, -2.0], [5.0, -2.0, 6.0], [9, 9, 9]])
 
-info, data = sd.solver(sd.square_sum, start, 10 ** (-10), 10000)
+info, data = sd.solver(sd.styb_tang, start, 10 ** (-10), 10000)
 
 
 
-square_sum()
-# rosenbrock()
-# styb_tang()
+#square_sum()
+#rosenbrock()
+styb_tang()
 #schwefel()
-
+#demoanim()
 anim(data,info)

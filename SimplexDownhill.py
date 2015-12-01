@@ -83,17 +83,17 @@ def simplex(x, testfn):
         return "Reflect"
     # reflected value is better than former best, check if expanded value is even better
     elif f_xreflect < f_x0:
-        x_expand = 3*x_centroid[0] - 2 * x[last]
+        x_expand = 3*x_centroid - 2 * x[last]
         if testfn(x_expand) < f_x0:
             x[last] = x_expand
-            return "2xReflect"
+            return "Expand"
         else:
             x[last] = x_reflect
             return "Reflect"
     # contracted value is better than worst value
     elif testfn(x_contract) < f_xworst:
         x[last] = x_contract
-        return "1/2xReflect"
+        return "Reduct"
     # contract every point but the best towards the best point
     else:
         x[:] = (x[0] + x[:]) * 0.5
